@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { useHistory } from "react-router";
 import { useSocket } from "../hooks/pollResponses";
@@ -56,7 +56,6 @@ const Button = styled.button<ButtonProps>`
 
 const Home: React.FC = () => {
   const [response, setResponse] = useState<string>("");
-  const [responseQueue, setResponseQueue] = useState<string[]>([]);
   const history = useHistory();
   const { client } = useSocket();
 
@@ -79,20 +78,9 @@ const Home: React.FC = () => {
         theme: "colored",
       });
     } else {
-      if (client && client.readyState === 1) {
-        client.send(response);
-      } else {
-        setResponseQueue([...responseQueue, response]);
-      }
+      client.send(response);
     }
   };
-
-  useEffect(() => {
-    if (client.readyState === 1) {
-      responseQueue.forEach((response) => client.send(response));
-      setResponseQueue([]);
-    }
-  }, [client.readyState]);
 
   return (
     <Container>
@@ -101,7 +89,6 @@ const Home: React.FC = () => {
         rows={4}
         value={response}
         onChange={(ev) => {
-          console.log(ev.currentTarget.value);
           setResponse(ev.currentTarget.value);
         }}
       />
