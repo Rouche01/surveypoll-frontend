@@ -15,6 +15,7 @@ export const Container = styled.div`
   margin: 0 auto;
   margin-top: 70px;
   padding-bottom: 30px;
+  padding: 0 20px;
 `;
 
 const TextBox = styled.textarea`
