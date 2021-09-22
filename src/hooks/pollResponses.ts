@@ -7,40 +7,30 @@ type ResponseRecord = {
   response: string;
 };
 
+// let connectionRetries = 5;
+
 export const useSocket = () => {
-  const client = new W3CWebSocket("ws://localhost:8080");
+  const client = new W3CWebSocket("ws://fathomless-cove-99421.herokuapp.com/");
   const [responses, setResponses] = useState<ResponseRecord[]>([]);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  let timer: NodeJS.Timeout;
-
-  const connectToSocket = () => {
+  useEffect(() => {
     client.onopen = () => {
       console.log("WebSocket client connected");
     };
-
     client.onmessage = ({ data }) => {
       setResponses(JSON.parse(data.toString()));
     };
+    // client.onerror = () => {
+    //   if(client.readyState === 3) {
+    //     connectionRetries--;
+    //     if (connectionRetries > 0) {
+    //       const timer = 
+    //     }
+    //   }
+    // }
 
-    client.onclose = () => {
-      timer = setTimeout(() => connectToSocket(), 1000);
-    };
-
-    client.onerror = (err) => {
-      setErrorMessage(`Socket encountered error: ${err.message}`);
-      client.close();
-    };
-  };
-
-  useEffect(() => {
-    connectToSocket();
-
-    return () => {
-      client.close();
-      clearTimeout(timer);
-    };
+    return () => client.close();
   }, []);
 
-  return { client, responses, errorMessage };
+  return { client, responses };
 };

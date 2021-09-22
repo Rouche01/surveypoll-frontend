@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useHistory } from "react-router";
 import { useSocket } from "../hooks/pollResponses";
@@ -62,7 +62,7 @@ const Home: React.FC = () => {
 
   const blacklistWords = ["yes", "I don't know", "no", "that's fine"];
 
-  const sendResponse = useCallback(() => {
+  const sendResponse = () => {
     console.log(response);
     if (response.trim().length === 0) {
       toast("Can't submit empty response", {
@@ -85,7 +85,7 @@ const Home: React.FC = () => {
         setResponseQueue([...responseQueue, response]);
       }
     }
-  }, []);
+  };
 
   useEffect(() => {
     if (client.readyState === 1) {
@@ -100,7 +100,10 @@ const Home: React.FC = () => {
       <TextBox
         rows={4}
         value={response}
-        onChange={(ev) => setResponse(ev.currentTarget.value)}
+        onChange={(ev) => {
+          console.log(ev.currentTarget.value);
+          setResponse(ev.currentTarget.value);
+        }}
       />
       <Flex>
         <Button onClick={sendResponse} color="palevioletred">
