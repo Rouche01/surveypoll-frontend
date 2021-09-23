@@ -26,7 +26,8 @@ export const useSocket = () => {
       setResponses(JSON.parse(event.data.toString()));
     });
 
-    return () => client.close();
+    return () =>
+      client.removeEventListener("message", (ev) => console.log("remove"));
   }, []);
 
   return { client, responses };
