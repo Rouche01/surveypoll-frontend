@@ -8,10 +8,14 @@ type ResponseRecord = {
 };
 
 export const useSocket = () => {
-  const client = new ReconnectingWebSocket("ws://localhost:8080/", [], {
-    connectionTimeout: 1000,
-    maxRetries: 10,
-  });
+  const client = new ReconnectingWebSocket(
+    "ws://fathomless-cove-99421.herokuapp.com/",
+    [],
+    {
+      connectionTimeout: 1000,
+      maxRetries: 10,
+    }
+  );
   const [responses, setResponses] = useState<ResponseRecord[]>([]);
 
   useEffect(() => {
