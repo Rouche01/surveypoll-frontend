@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
-import { useSocket } from "../hooks/pollResponses";
+import useWebSocket from "react-use-websocket";
 import { Container } from "./Home";
+import { useEffect } from "react";
 
 const ResponseItem = styled.p`
   background-color: rgba(234, 232, 228, 0.7);
@@ -9,8 +10,30 @@ const ResponseItem = styled.p`
   padding: 7px 12px;
 `;
 
+type ResponseRecord = {
+  id: string;
+  response: string;
+};
+
 const Response: React.FC = () => {
-  const { responses } = useSocket();
+  const [responses, setResponse] = useState<ResponseRecord[]>([]);
+  const { lastMessage } = useWebSocket(
+    "wss://fathomless-cove-99421.herokuapp.com/",
+    {
+      onOpen: () => console.log("WebSocket connection opened"),
+      shouldReconnect: (closeEvent) => true,
+    }
+  );
+
+  useEffect(() => {
+    if (lastMessage) {
+      console.log(JSON.parse(lastMessage.data));
+      const convertedResponse = JSON.parse(
+        lastMessage.data
+      ) as ResponseRecord[];
+      setResponse(convertedResponse);
+    }
+  }, [lastMessage]);
 
   return (
     <Container>

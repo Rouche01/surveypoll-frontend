@@ -1,8 +1,8 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState } from "react";
 import styled from "styled-components";
 import { useHistory } from "react-router";
-import { useSocket } from "../hooks/pollResponses";
+// import { useSocket } from "../hooks/pollResponses";
+import useWebSocket from "react-use-websocket";
 import { toast, ToastContainer } from "react-toastify";
 
 interface ButtonProps {
@@ -58,7 +58,14 @@ const Button = styled.button<ButtonProps>`
 const Home: React.FC = () => {
   const [response, setResponse] = useState<string>("");
   const history = useHistory();
-  const { client } = useSocket();
+
+  const { sendMessage } = useWebSocket(
+    "wss://fathomless-cove-99421.herokuapp.com/",
+    {
+      onOpen: () => console.log("WebSocket connection opened"),
+      shouldReconnect: (closeEvent) => true,
+    }
+  );
 
   const blacklistWords = ["yes", "I don't know", "no", "that's fine"];
 
@@ -79,7 +86,15 @@ const Home: React.FC = () => {
         theme: "colored",
       });
     } else {
-      client.send(response);
+      sendMessage(response);
+    }
+  };
+
+  const handleSubmitWithKeyPress = (
+    ev: React.KeyboardEvent<HTMLTextAreaElement>
+  ) => {
+    if (ev.key.toLowerCase() === "enter" || ev.code.toLowerCase() === "enter") {
+      sendResponse();
     }
   };
 
@@ -92,6 +107,7 @@ const Home: React.FC = () => {
         onChange={(ev) => {
           setResponse(ev.currentTarget.value);
         }}
+        onKeyPress={(ev) => handleSubmitWithKeyPress(ev)}
       />
       <Flex>
         <Button onClick={sendResponse} color="palevioletred">
