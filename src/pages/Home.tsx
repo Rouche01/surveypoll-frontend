@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import { useHistory } from "react-router";
-// import { useSocket } from "../hooks/pollResponses";
 import useWebSocket from "react-use-websocket";
 import { toast, ToastContainer } from "react-toastify";
 
