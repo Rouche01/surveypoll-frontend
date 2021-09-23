@@ -9,7 +9,7 @@ type ResponseRecord = {
 
 export const useSocket = () => {
   const client = new ReconnectingWebSocket(
-    "ws://fathomless-cove-99421.herokuapp.com/",
+    "wss://fathomless-cove-99421.herokuapp.com/",
     [],
     {
       connectionTimeout: 1000,
